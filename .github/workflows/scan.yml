@@ -1,0 +1,39 @@
+name: face-scan
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'      # har 30 minute khud
+  workflow_dispatch:            # haath se chalane ke liye (Actions tab → Run)
+  repository_dispatch:
+    types: [wedface-scan]       # site se instant poke (naya selfie/wedding aate hi)
+
+concurrency:
+  group: face-scan
+  cancel-in-progress: false     # ek run chal rahi ho to doosri queue me lagti hai
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Cache InsightFace model
+        uses: actions/cache@v4
+        with:
+          path: ~/.insightface
+          key: insightface-buffalo-s-v1
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Run robot
+        env:
+          WF_BASE: ${{ vars.WF_BASE || 'https://wedface.in' }}
+          WF_TOKEN: ${{ secrets.WF_TOKEN }}
+        run: python scan.py
