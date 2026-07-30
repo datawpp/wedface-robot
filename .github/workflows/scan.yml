@@ -2,14 +2,14 @@ name: face-scan
 
 on:
   schedule:
-    - cron: '*/30 * * * *'      # har 30 minute khud
-  workflow_dispatch:            # haath se chalane ke liye (Actions tab → Run)
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
   repository_dispatch:
-    types: [wedface-scan]       # site se instant poke (naya selfie/wedding aate hi)
+    types: [wedface-scan]
 
 concurrency:
   group: face-scan
-  cancel-in-progress: false     # ek run chal rahi ho to doosri queue me lagti hai
+  cancel-in-progress: false
 
 jobs:
   scan:
@@ -29,9 +29,9 @@ jobs:
           path: ~/.insightface
           key: insightface-buffalo-s-v1
 
-           - name: Install deps
+      - name: Install deps
         run: |
-          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -U pip setuptools wheel
           pip install "cython<3" "numpy==1.26.4"
           pip install -r requirements.txt
 
