@@ -22,6 +22,14 @@ import requests
 import cv2
 from insightface.app import FaceAnalysis
 
+# GitHub runners par IPv6 nahi hota. Domain ke AAAA records hone se robot IPv6
+# try karta tha -> "[Errno 101] Network is unreachable". Isliye sirf IPv4 use karo.
+import socket as _sock
+_orig_gai = _sock.getaddrinfo
+def _ipv4_only(host, port, family=0, type=0, proto=0, flags=0):
+    return _orig_gai(host, port, _sock.AF_INET, type, proto, flags)
+_sock.getaddrinfo = _ipv4_only
+
 BASE = os.environ.get('WF_BASE', 'https://wedface.in').rstrip('/')
 TOKEN = os.environ.get('WF_TOKEN', '')
 DEADLINE = time.time() + 45 * 60          # runner limit se pehle khud ruk jao
