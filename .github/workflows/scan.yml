@@ -2,7 +2,7 @@ name: face-scan
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '9,39 * * * *'      # har 30 minute khud
   workflow_dispatch:
   repository_dispatch:
     types: [wedface-scan]
